@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DTP Observation Tracking System – Zetwerk</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --zo:#F47B20;--zd:#1A1A2E;--zm:#0F3460;--zi:#1E2A45;
+  --zt:#E8E8E8;--zs:#9BA3B2;--zb:rgba(244,123,32,0.28);
+  --zg:#22C55E;--zw:#F59E0B;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--zd);color:var(--zt);min-height:100vh;padding-bottom:60px}
+
+.hdr{background:linear-gradient(135deg,#1A1A2E 0%,#0F3460 70%,#1A1A2E 100%);border-bottom:2px solid var(--zo);padding:20px 32px;display:flex;align-items:center;gap:18px;position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;border:2px solid rgba(244,123,32,0.12);border-radius:50%}
+.hdr::after{content:'';position:absolute;top:-20px;right:-20px;width:110px;height:110px;border:2px solid rgba(244,123,32,0.08);border-radius:50%}
+.logo{width:52px;height:52px;background:var(--zo);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:#fff;flex-shrink:0;letter-spacing:-1px}
+.hdr-txt h1{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:#fff;letter-spacing:1px;line-height:1.15}
+.hdr-txt p{font-size:11px;color:var(--zo);font-weight:500;letter-spacing:2px;text-transform:uppercase;margin-top:2px}
+
+.notice{background:rgba(244,123,32,0.1);border:1px solid var(--zb);border-radius:8px;margin:16px auto;max-width:860px;padding:10px 16px;font-size:12px;color:var(--zo);display:flex;align-items:center;gap:8px}
+
+.wrap{max-width:860px;margin:0 auto;padding:0 32px}
+.sec{margin-bottom:24px}
+.sec-title{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--zo);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--zb);display:flex;align-items:center;gap:8px}
+.sec-title::before{content:'';width:3px;height:11px;background:var(--zo);border-radius:2px;flex-shrink:0}
+
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+
+.f{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+label.lbl{font-size:12px;font-weight:500;color:var(--zs)}
+label.lbl .r{color:var(--zo);margin-left:2px}
+
+input[type=text],input[type=date],input[type=time],select,textarea{
+  background:var(--zi);border:1.5px solid rgba(244,123,32,0.25);
+  border-radius:8px;color:var(--zt);
+  font-family:'DM Sans',sans-serif;font-size:13px;
+  padding:10px 14px;width:100%;outline:none;
+  transition:border-color 0.2s,background 0.2s;
+  -webkit-appearance:none;appearance:none;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--zo);background:#1E2F50}
+input::placeholder,textarea::placeholder{color:#445;font-size:12px}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%23F47B20' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:34px}
+select option{background:#1A1A2E}
+textarea{resize:vertical;min-height:78px;line-height:1.5}
+
+.pills{display:flex;flex-wrap:wrap;gap:7px;padding:4px 0}
+.pill{display:flex;align-items:center;gap:5px;background:var(--zi);border:1.5px solid rgba(244,123,32,0.25);border-radius:20px;padding:6px 13px;cursor:pointer;font-size:12px;font-weight:500;color:var(--zs);transition:all 0.2s;user-select:none}
+.pill:hover{border-color:var(--zo);color:var(--zt)}
+.pill input{display:none}
+.pill.on{background:rgba(244,123,32,0.15);border-color:var(--zo);color:var(--zo)}
+.pill .dot{width:6px;height:6px;border-radius:50%;background:currentColor;display:none;flex-shrink:0}
+.pill.on .dot{display:block}
+
+.chks{display:flex;flex-direction:column;gap:8px;padding:4px 0}
+.chk{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;color:var(--zt);padding:6px 0}
+.chk input{display:none}
+.chkbox{width:18px;height:18px;border-radius:4px;border:1.5px solid rgba(244,123,32,0.35);background:var(--zi);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s}
+.chk.on .chkbox{background:var(--zo);border-color:var(--zo)}
+.chk.on .chkbox::after{content:'✓';color:#fff;font-size:11px;font-weight:700}
+
+.status-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.scard{background:var(--zi);border:1.5px solid rgba(244,123,32,0.25);border-radius:10px;padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all 0.2s}
+.scard:hover{border-color:var(--zo)}
+.scard.open-on{border-color:var(--zw);background:rgba(245,158,11,0.1)}
+.scard.close-on{border-color:var(--zg);background:rgba(34,197,94,0.08)}
+.scard input{display:none}
+.si{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.sl{font-size:13px;font-weight:500;color:var(--zt)}
+.ss{font-size:11px;color:var(--zs)}
+
+.file-zone{border:2px dashed rgba(244,123,32,0.3);border-radius:10px;padding:24px;text-align:center;cursor:pointer;background:var(--zi);transition:all 0.2s;position:relative}
+.file-zone:hover{border-color:var(--zo);background:#1E2F50}
+.file-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.file-zone .fi{font-size:24px;margin-bottom:6px}
+.file-zone strong{color:var(--zo);font-size:13px;display:block}
+.file-zone p{font-size:11px;color:var(--zs)}
+.fname{font-size:12px;color:var(--zg);margin-top:6px;display:none}
+
+.footer{background:#0F3460;border-top:2px solid var(--zb);padding:18px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:8px}
+.fnote{font-size:11px;color:var(--zs)}
+.fnote strong{color:var(--zo)}
+.btn{background:var(--zo);color:#fff;border:none;border-radius:10px;padding:12px 32px;font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:8px}
+.btn:hover{background:#D96A10;transform:translateY(-1px)}
+.btn:active{transform:scale(0.98)}
+.btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+
+.overlay{display:none;position:fixed;inset:0;background:rgba(5,10,20,0.93);align-items:center;justify-content:center;z-index:100;flex-direction:column}
+.sbox{background:#0F3460;border:2px solid var(--zo);border-radius:16px;padding:40px 48px;text-align:center;max-width:400px;width:90%}
+.sbox .sico{font-size:46px;margin-bottom:10px}
+.sbox h2{font-family:'Rajdhani',sans-serif;font-size:24px;color:#fff;margin-bottom:8px}
+.sbox p{font-size:13px;color:var(--zs);line-height:1.6}
+.btn2{margin-top:20px;background:var(--zo);color:#fff;border:none;border-radius:8px;padding:10px 28px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;cursor:pointer;letter-spacing:1px}
+
+@media(max-width:600px){
+  .row,.row3{grid-template-columns:1fr}
+  .hdr,.wrap,.footer,.notice{padding-left:16px;padding-right:16px}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="logo">ZW</div>
+  <div class="hdr-txt">
+    <h1>DTP OBSERVATION TRACKING SYSTEM</h1>
+    <p>Zetwerk Safety &amp; Compliance Portal · zetwerk.in</p>
+  </div>
+</div>
+
+<div class="notice" style="max-width:860px;margin:16px auto;">
+  ⚡ Live Form — submissions go directly to your Google Sheet
+</div>
+
+<div class="wrap">
+
+  <div class="sec">
+    <div class="sec-title">Site &amp; Contractor Information</div>
+    <div class="row">
+      <div class="f">
+        <label class="lbl">Contractor<span class="r">*</span></label>
+        <input type="text" id="contractor" placeholder="Enter contractor name">
+      </div>
+      <div class="f">
+        <label class="lbl">Work Location / Area<span class="r">*</span></label>
+        <input type="text" id="location" placeholder="e.g. Block A, Level 3">
+      </div>
+    </div>
+    <div class="row">
+      <div class="f">
+        <label class="lbl">Observation Date<span class="r">*</span></label>
+        <input type="date" id="obs_date">
+      </div>
+      <div class="f">
+        <label class="lbl">Observation Time<span class="r">*</span></label>
+        <input type="time" id="obs_time">
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title">Observation Details</div>
+    <div class="f">
+      <label class="lbl">Observation Category<span class="r">*</span></label>
+      <select id="obs_cat">
+        <option value="">Choose category...</option>
+        <option value="Hetight work">Height Work</option>
+        <option value="Excavation">Excavation</option>
+        <option value="Hotwork">Hot Work</option>
+        <option value="Housekeeping">Housekeeping</option>
+        <option value="Materils stacking">Materials Stacking</option>
+        <option value="Scaffolding">Scaffolding</option>
+        <option value="PPEs">PPEs</option>
+        <option value="Materils Handling">Materials Handling</option>
+        <option value="Tools &amp; Tckles">Tools &amp; Tackles</option>
+        <option value="Electrical">Electrical</option>
+      </select>
+    </div>
+
+    <div class="f">
+      <label class="lbl">Observation Classification (Type)<span class="r">*</span></label>
+      <div class="pills" id="obsType">
+        <label class="pill" onclick="pickPill(this,'obsType')"><input type="radio" name="obsType" value="Unsafe Act"><div class="dot"></div>Unsafe Act</label>
+        <label class="pill" onclick="pickPill(this,'obsType')"><input type="radio" name="obsType" value="Unsafe Condition"><div class="dot"></div>Unsafe Condition</label>
+        <label class="pill" onclick="pickPill(this,'obsType')"><input type="radio" name="obsType" value="Near Miss"><div class="dot"></div>Near Miss</label>
+        <label class="pill" onclick="pickPill(this,'obsType')"><input type="radio" name="obsType" value="Unsafe Equipment"><div class="dot"></div>Unsafe Equipment</label>
+        <label class="pill" onclick="pickPill(this,'obsType')"><input type="radio" name="obsType" value="Environmental Concern"><div class="dot"></div>Environmental Concern</label>
+        <label class="pill" onclick="pickPill(this,'obsType')"><input type="radio" name="obsType" value="Good Safety Practice"><div class="dot"></div>Good Safety Practice</label>
+      </div>
+    </div>
+
+    <div class="f">
+      <label class="lbl">Observation / Non-Compliances<span class="r">*</span></label>
+      <textarea id="obs_noncomp" placeholder="Describe the observation or non-compliance in detail..."></textarea>
+    </div>
+
+    <div class="f">
+      <label class="lbl">Observation Photograph<span class="r">*</span></label>
+      <div class="file-zone">
+        <input type="file" accept="image/*" onchange="pickFile(this)" id="photo_file">
+        <div class="fi">📸</div>
+        <strong>Click to upload photo</strong>
+        <p>JPG, PNG, HEIC — max 10 MB</p>
+        <p class="fname" id="fname"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title">Corrective &amp; Preventive Action</div>
+    <div class="f">
+      <label class="lbl">Corrective / Preventive Action Recommended<span class="r">*</span></label>
+      <textarea id="corr_action" placeholder="Describe recommended corrective or preventive actions..."></textarea>
+    </div>
+    <div class="row">
+      <div class="f">
+        <label class="lbl">Target Date<span class="r">*</span></label>
+        <input type="date" id="target_date">
+      </div>
+      <div class="f">
+        <label class="lbl">Observation Status<span class="r">*</span></label>
+        <div class="status-row">
+          <label class="scard" id="sc_open" onclick="pickStatus('Open')">
+            <input type="radio" name="obs_status" value="Open">
+            <div class="si" style="background:rgba(245,158,11,0.15)">🟡</div>
+            <div><div class="sl">Open</div><div class="ss">Pending</div></div>
+          </label>
+          <label class="scard" id="sc_close" onclick="pickStatus('Closed')">
+            <input type="radio" name="obs_status" value="Closed">
+            <div class="si" style="background:rgba(34,197,94,0.1)">✅</div>
+            <div><div class="sl">Closed</div><div class="ss">Resolved</div></div>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title">Personnel Details</div>
+    <div class="row3">
+      <div class="f">
+        <label class="lbl">Job Supervisor<span class="r">*</span></label>
+        <input type="text" id="supervisor" placeholder="Supervisor name">
+      </div>
+      <div class="f">
+        <label class="lbl">Zetwerk Line Engineer / Manager<span class="r">*</span></label>
+        <input type="text" id="engineer" placeholder="Engineer / Manager name">
+      </div>
+      <div class="f">
+        <label class="lbl">Observation Made By<span class="r">*</span></label>
+        <input type="text" id="made_by" placeholder="Your name">
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title">Notification Recipients</div>
+    <div class="row">
+      <div class="f">
+        <label class="lbl">Mail Send To</label>
+        <div class="chks" id="sendTo">
+          <label class="chk" onclick="togChk(this)"><input type="checkbox" value="sanwariyaramoffice@gmail.com"><div class="chkbox"></div>sanwariyaramoffice@gmail.com</label>
+          <label class="chk" onclick="togChk(this)"><input type="checkbox" value="dipankar.nag@zetwerk.com"><div class="chkbox"></div>dipankar.nag@zetwerk.com</label>
+          <label class="chk" onclick="togChk(this)"><input type="checkbox" value="srimantakumar.h@zetwerk.in"><div class="chkbox"></div>srimantakumar.h@zetwerk.in</label>
+          <label class="chk" onclick="togChk(this)"><input type="checkbox" value="subhabrata.hazra@sharptanks.com"><div class="chkbox"></div>subhabrata.hazra@sharptanks.com</label>
+          <label class="chk" onclick="togChk(this)"><input type="checkbox" value="sabarigiri.a@zetwerk.com"><div class="chkbox"></div>sabarigiri.a@zetwerk.com</label>
+          <label class="chk" onclick="togChk(this)"><input type="checkbox" value="barakatullah@zetwerk.com"><div class="chkbox"></div>barakatullah@zetwerk.com</label>
+        </div>
+      </div>
+      <div class="f">
+        <label class="lbl">Mail CC To</label>
+        <div class="chks" id="ccTo">
+          <label class="chk" onclick="togChk(this)"><input type="checkbox" value="srinivasarao.p@zetwerk.com"><div class="chkbox"></div>srinivasarao.p@zetwerk.com</label>
+          <label class="chk" onclick="togChk(this)"><input type="checkbox" value="indrajit.p@zetwerk.in"><div class="chkbox"></div>indrajit.p@zetwerk.in</label>
+          <label class="chk" onclick="togChk(this)"><input type="checkbox" value="sabarigiri.a@zetwerk.com"><div class="chkbox"></div>sabarigiri.a@zetwerk.com</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="fnote">Fields marked <strong>*</strong> are required &nbsp;·&nbsp; Zetwerk Safety Portal &copy; 2025</div>
+  <button class="btn" id="submitBtn" onclick="doSubmit()">
+    <span>SUBMIT OBSERVATION</span><span>→</span>
+  </button>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="sbox">
+    <div class="sico">✅</div>
+    <h2>Submitted Successfully!</h2>
+    <p>Your DTP safety observation has been recorded in Zetwerk's Google Sheet. The relevant team members will be notified.</p>
+    <button class="btn2" onclick="resetAll()">SUBMIT ANOTHER</button>
+  </div>
+</div>
+
+<script>
+var FORM_ACTION='https://docs.google.com/forms/u/0/d/e/1FAIpQLSeCChhqt4d0QAyZkT3VOhqwHNqBnTY3WWrptEB8Um1B2XsQyQ/formResponse';
+var ENTRIES={
+  contractor:'entry.1366845094',
+  location:'entry.911766662',
+  obs_cat:'entry.926455476',
+  obs_type:'entry.1702062466',
+  obs_noncomp:'entry.318975742',
+  corr_action:'entry.603199413',
+  obs_status:'entry.1082182658',
+  supervisor:'entry.1169278836',
+  engineer:'entry.2020443455',
+  made_by:'entry.363264933',
+  send_to:'entry.502875199',
+  cc_to:'entry.1282579956'
+};
+
+var today=new Date().toISOString().split('T')[0];
+var now=new Date();
+document.getElementById('obs_date').value=today;
+document.getElementById('target_date').value=today;
+document.getElementById('obs_time').value=('0'+now.getHours()).slice(-2)+':'+('0'+now.getMinutes()).slice(-2);
+
+function pickPill(el,grp){
+  document.querySelectorAll('#'+grp+' .pill').forEach(function(p){p.classList.remove('on')});
+  el.classList.add('on');
+  el.querySelector('input').checked=true;
+}
+function pickStatus(val){
+  document.getElementById('sc_open').className='scard'+(val==='Open'?' open-on':'');
+  document.getElementById('sc_close').className='scard'+(val==='Closed'?' close-on':'');
+  document.querySelector('input[name="obs_status"][value="'+val+'"]').checked=true;
+}
+function togChk(el){
+  el.classList.toggle('on');
+  el.querySelector('input').checked=el.classList.contains('on');
+}
+function pickFile(inp){
+  if(inp.files&&inp.files[0]){
+    var n=document.getElementById('fname');
+    n.textContent='📎 '+inp.files[0].name;
+    n.style.display='block';
+  }
+}
+
+function doSubmit(){
+  var contractor=document.getElementById('contractor').value.trim();
+  var location=document.getElementById('location').value.trim();
+  var obs_date=document.getElementById('obs_date').value;
+  var obs_time=document.getElementById('obs_time').value;
+  var obs_cat=document.getElementById('obs_cat').value;
+  var obs_type=document.querySelector('input[name="obsType"]:checked');
+  var obs_noncomp=document.getElementById('obs_noncomp').value.trim();
+  var corr_action=document.getElementById('corr_action').value.trim();
+  var target_date=document.getElementById('target_date').value;
+  var obs_status=document.querySelector('input[name="obs_status"]:checked');
+  var supervisor=document.getElementById('supervisor').value.trim();
+  var engineer=document.getElementById('engineer').value.trim();
+  var made_by=document.getElementById('made_by').value.trim();
+
+  if(!contractor||!location||!obs_date||!obs_time||!obs_cat||!obs_type||!obs_noncomp||!corr_action||!target_date||!obs_status||!supervisor||!engineer||!made_by){
+    alert('Please fill in all required fields (*) before submitting.');
+    return;
+  }
+
+  var btn=document.getElementById('submitBtn');
+  btn.disabled=true;
+  btn.innerHTML='<span>SUBMITTING...</span>';
+
+  var iframe=document.createElement('iframe');
+  iframe.name='gf_'+Date.now();
+  iframe.style.display='none';
+  document.body.appendChild(iframe);
+
+  var form=document.createElement('form');
+  form.method='POST';
+  form.action=FORM_ACTION;
+  form.target=iframe.name;
+  form.style.display='none';
+
+  function addField(name,val){
+    var i=document.createElement('input');
+    i.type='hidden';i.name=name;i.value=val;
+    form.appendChild(i);
+  }
+
+  addField(ENTRIES.contractor,contractor);
+  var dp=obs_date.split('-');
+  addField('entry.1417890571_year',dp[0]);
+  addField('entry.1417890571_month',dp[1]);
+  addField('entry.1417890571_day',dp[2]);
+  var tp=obs_time.split(':');
+  var h=parseInt(tp[0]),m=tp[1];
+  var ampm=h>=12?'PM':'AM';
+  var h12=h%12||12;
+  addField('entry.1999467479',String(h12));
+  addField('entry.1999467479_minute',m);
+  addField('entry.1999467479_meridiem',ampm);
+  addField(ENTRIES.location,location);
+  addField(ENTRIES.obs_cat,obs_cat);
+  addField(ENTRIES.obs_type,obs_type.value);
+  addField(ENTRIES.obs_noncomp,obs_noncomp);
+  addField(ENTRIES.corr_action,corr_action);
+  var tdp=target_date.split('-');
+  addField('entry.615694561_year',tdp[0]);
+  addField('entry.615694561_month',tdp[1]);
+  addField('entry.615694561_day',tdp[2]);
+  addField(ENTRIES.obs_status,obs_status.value);
+  addField(ENTRIES.supervisor,supervisor);
+  addField(ENTRIES.engineer,engineer);
+  addField(ENTRIES.made_by,made_by);
+  document.querySelectorAll('#sendTo input:checked').forEach(function(cb){addField(ENTRIES.send_to,cb.value)});
+  document.querySelectorAll('#ccTo input:checked').forEach(function(cb){addField(ENTRIES.cc_to,cb.value)});
+  addField('fvv','1');
+  addField('fbzx',Date.now().toString());
+  addField('pageHistory','0');
+
+  document.body.appendChild(form);
+  iframe.onload=function(){
+    document.getElementById('overlay').style.display='flex';
+    btn.disabled=false;
+    btn.innerHTML='<span>SUBMIT OBSERVATION</span><span>→</span>';
+    setTimeout(function(){
+      if(form.parentNode)document.body.removeChild(form);
+      if(iframe.parentNode)document.body.removeChild(iframe);
+    },3000);
+  };
+  form.submit();
+}
+
+function resetAll(){
+  ['contractor','location','obs_noncomp','corr_action','supervisor','engineer','made_by'].forEach(function(id){document.getElementById(id).value=''});
+  document.getElementById('obs_date').value=today;
+  document.getElementById('target_date').value=today;
+  document.getElementById('obs_time').value=('0'+now.getHours()).slice(-2)+':'+('0'+now.getMinutes()).slice(-2);
+  document.getElementById('obs_cat').value='';
+  document.querySelectorAll('.pill').forEach(function(p){p.classList.remove('on')});
+  document.getElementById('fname').style.display='none';
+  document.getElementById('photo_file').value='';
+  document.getElementById('sc_open').className='scard';
+  document.getElementById('sc_close').className='scard';
+  document.querySelectorAll('.chk').forEach(function(c){c.classList.remove('on')});
+  document.querySelectorAll('.chk input').forEach(function(c){c.checked=false});
+  document.getElementById('overlay').style.display='none';
+}
+</script>
+</body>
+</html>
